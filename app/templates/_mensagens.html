@@ -1,0 +1,8 @@
+{# Mensagens de feedback (catálogo M01–M52). Categorias: success, danger, warning, info #}
+{% set icones = {"success": "check-circle", "danger": "x-circle", "warning": "exclamation-triangle", "info": "info-circle"} %}
+{% for categoria, mensagem in get_flashed_messages(with_categories=true) %}
+  <div class="alert alert-{{ categoria }} alert-dismissible fade show" role="alert">
+    <i class="bi bi-{{ icones.get(categoria, 'info-circle') }}"></i> {{ mensagem }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+  </div>
+{% endfor %}

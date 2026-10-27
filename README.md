@@ -43,21 +43,67 @@ O **EstoqueFácil** é um sistema web simples para o comerciante saber, a qualqu
 | Hospedagem | PythonAnywhere |
 | Modo de codificação | Tradicional |
 
+## Como executar no seu computador (Windows)
+
+Pré-requisito: [Python 3.11+](https://www.python.org/downloads/).
+
+| Ação | Como fazer |
+|---|---|
+| Abrir o sistema | Duplo clique em **`rodar_local.bat`**. O navegador abre em http://127.0.0.1:5000 |
+| Login de exemplo | `demo@estoquefacil.com` / senha `demo123` |
+| Rodar os testes | Duplo clique em **`rodar_testes.bat`** |
+| Recomeçar o banco do zero | `.venv\Scripts\python.exe criar_banco.py --recriar --exemplo` |
+
+Na primeira execução, o script cria o ambiente Python (`.venv`), instala as bibliotecas e cria
+um banco SQLite com dados de exemplo em `instance/estoque.db`.
+
+## Arquitetura (MVC)
+
+```mermaid
+flowchart LR
+    U[Usuário<br/>navegador] -->|requisição HTTP| C[Controller<br/>app/controllers]
+    C -->|lê e altera| M[Model<br/>app/models]
+    M <-->|SQLAlchemy| DB[(MySQL / SQLite)]
+    C -->|dados| V[View<br/>app/templates]
+    V -->|HTML| U
+```
+
+| Camada | Pasta | Responsabilidade |
+|---|---|---|
+| **Model** | `app/models/` | Tabelas do banco e regras de negócio (ex.: bloquear saída maior que o estoque) |
+| **View** | `app/templates/`, `app/static/` | Telas HTML (Bootstrap), CSS e JavaScript |
+| **Controller** | `app/controllers/` | Recebe as ações do usuário, chama o Model e escolhe a View |
+
 ## Estrutura do repositório
 
 ```
 ProjetoIntegrador/
+├── app/
+│   ├── models/        → M: Usuario, Categoria, Fornecedor, Produto, Movimentacao
+│   ├── controllers/   → C: auth (login/cadastro), painel, ...
+│   ├── templates/     → V: telas HTML
+│   └── static/        → CSS e JavaScript
+├── tests/             → Testes automatizados (pytest)
+├── database/          → Projeto físico do banco de dados (schema.sql)
 ├── docs/
-│   ├── situacao-1/   → Documentação revisada: escopo, requisitos, UML, IHC, banco de dados
-│   ├── situacao-2/   → Manual de uso e evidências dos testes automatizados
-│   └── situacao-3/   → Plano de testes, avaliações dos testadores e laudo de qualidade
-├── database/         → Projeto físico do banco de dados (schema.sql)
-├── app/              → Código-fonte (Model, View, Controller)
-└── tests/            → Testes automatizados
+│   ├── situacao-1/    → Escopo, requisitos, UML, IHC, banco de dados
+│   ├── situacao-2/    → Manual de uso e evidências dos testes
+│   └── situacao-3/    → Plano de testes, avaliações e laudo de qualidade
+├── config.py          → Configurações (banco, chave secreta)
+├── criar_banco.py     → Cria as tabelas e os dados de exemplo
+├── run.py             → Inicia o sistema localmente
+├── rodar_local.bat    → Duplo clique: abre o sistema
+└── rodar_testes.bat   → Duplo clique: roda os testes
 ```
 
 ## Andamento
 
-- [ ] **Situação 1:** Documentação revisada
+- [x] **Situação 1:** Documentação revisada
 - [ ] **Situação 2:** Codificação (front-end, back-end, testes, publicação)
+  - [x] Estrutura MVC, banco de dados e regras de negócio
+  - [x] Criar conta, login e logout
+  - [x] Painel com indicadores e alerta de estoque baixo
+  - [ ] Categorias, fornecedores e produtos
+  - [ ] Entradas, saídas e histórico de movimentações
+  - [ ] Publicação no PythonAnywhere
 - [ ] **Situação 3:** Testes com usuários, correções e laudo de qualidade

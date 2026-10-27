@@ -1,0 +1,12 @@
+{# Campo de formulário padrão: rótulo acima, * nos obrigatórios, erro embaixo do campo (padrão da IHC) #}
+{% macro campo(nome, rotulo, form, erros, tipo="text", obrigatorio=False, ajuda=None) -%}
+  <div class="mb-3">
+    <label for="{{ nome }}" class="form-label">{{ rotulo }}{% if obrigatorio %} *{% endif %}</label>
+    <input type="{{ tipo }}" id="{{ nome }}" name="{{ nome }}"
+           class="form-control{% if erros.get(nome) %} is-invalid{% endif %}"
+           {% if tipo != "password" %}value="{{ form.get(nome, '') }}"{% endif %}
+           {% if obrigatorio %}required{% endif %} {{ kwargs | xmlattr }}>
+    {% if erros.get(nome) %}<div class="invalid-feedback">{{ erros[nome] }}</div>{% endif %}
+    {% if ajuda %}<div class="form-text">{{ ajuda }}</div>{% endif %}
+  </div>
+{%- endmacro %}

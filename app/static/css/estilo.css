@@ -1,0 +1,15 @@
+body {
+  background: #f4f6f9;
+}
+
+/* Números de destaque dos cartões do painel */
+.card-num {
+  font-size: 1.9rem;
+  font-weight: 700;
+}
+
+/* Login e criar conta: cartão centralizado */
+.tela-acesso {
+  max-width: 420px;
+  margin: 8vh auto 0;
+}
