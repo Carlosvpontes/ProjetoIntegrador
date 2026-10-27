@@ -11,11 +11,11 @@
 <body>
 
 {% if current_user.is_authenticated %}
-  {# (endpoint, ícone, rótulo, blueprint). Endpoint None = funcionalidade ainda em desenvolvimento #}
+  {# (endpoint, ícone, rótulo, blueprint) #}
   {% set itens_menu = [
     ("painel.index", "speedometer2", "Painel", "painel"),
     ("produtos.lista", "boxes", "Produtos", "produtos"),
-    (None, "arrow-left-right", "Movimentações", "movimentacoes"),
+    ("movimentacoes.historico", "arrow-left-right", "Movimentações", "movimentacoes"),
     ("categorias.lista", "tags", "Categorias", "categorias"),
     ("fornecedores.lista", "truck", "Fornecedores", "fornecedores"),
   ] %}
@@ -29,11 +29,7 @@
         <ul class="navbar-nav me-auto">
           {% for endpoint, icone, rotulo, blueprint in itens_menu %}
             <li class="nav-item">
-              {% if endpoint %}
-                <a class="nav-link {% if request.blueprint == blueprint %}active{% endif %}" href="{{ url_for(endpoint) }}"><i class="bi bi-{{ icone }}"></i> {{ rotulo }}</a>
-              {% else %}
-                <span class="nav-link disabled" title="Em desenvolvimento"><i class="bi bi-{{ icone }}"></i> {{ rotulo }}</span>
-              {% endif %}
+              <a class="nav-link {% if request.blueprint == blueprint %}active{% endif %}" href="{{ url_for(endpoint) }}"><i class="bi bi-{{ icone }}"></i> {{ rotulo }}</a>
             </li>
           {% endfor %}
         </ul>

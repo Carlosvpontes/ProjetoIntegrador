@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% from "_macros.html" import campo, selecao %}
+{% set titulo_tela = "Registrar entrada" if entrada else "Registrar saída" %}
+{% block titulo %}{{ titulo_tela }}{% endblock %}
+
+{% block conteudo %}
+<h1 class="h3 mb-3">
+  {% if entrada %}<i class="bi bi-plus-circle text-success"></i>{% else %}<i class="bi bi-dash-circle text-danger"></i>{% endif %}
+  {{ titulo_tela }}
+</h1>
+
+{% if not opcoes_produtos %}
+  <div class="alert alert-warning">
+    <i class="bi bi-exclamation-triangle"></i> Nenhum produto cadastrado.
+    <a href="{{ url_for('produtos.novo') }}">Cadastrar produto</a>
+  </div>
+{% endif %}
+
+<div class="card shadow-sm form-estreito"><div class="card-body">
+  <form method="post" novalidate>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    {{ selecao("produto_id", "Produto", opcoes_produtos, form, erros, obrigatorio=True) }}
+    {{ campo("quantidade", "Quantidade", form, erros, obrigatorio=True, inputmode="numeric", autofocus=(true if form.get("produto_id") else none)) }}
+    {{ campo("observacao", "Observação", form, erros, maxlength=255,
+             placeholder=("Opcional — ex.: compra NF 1234" if entrada else "Opcional — ex.: venda balcão, avaria")) }}
+    <div class="mt-2">
+      <button class="btn {{ 'btn-success' if entrada else 'btn-danger' }}"><i class="bi bi-check-lg"></i> {{ titulo_tela }}</button>
+      <a class="btn btn-secondary" href="{{ url_for('movimentacoes.historico') }}">Cancelar</a>
+    </div>
+  </form>
+</div></div>
+<p class="text-muted small mt-2"><i class="bi bi-info-circle"></i>
+  A data, a hora e o seu usuário são registrados automaticamente. Depois de registrada, a movimentação não pode ser alterada.
+</p>
+{% endblock %}

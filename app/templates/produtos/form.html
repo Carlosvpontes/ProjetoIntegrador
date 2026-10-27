@@ -35,7 +35,10 @@
       {% if novo %}
         O produto começa com estoque zero. Para adicionar unidades, registre uma <strong>entrada</strong>.
       {% else %}
-        Estoque atual: <strong>{{ produto.quantidade_atual }} unidade(s)</strong>. O estoque só muda por meio de entradas e saídas.
+        Estoque atual: <strong>{{ produto.quantidade_atual }} unidade(s)</strong>. O estoque só muda por meio de entradas e saídas:
+        <a href="{{ url_for('movimentacoes.nova', tipo='entrada', produto=produto.id) }}">registrar entrada</a> ·
+        <a href="{{ url_for('movimentacoes.nova', tipo='saida', produto=produto.id) }}">registrar saída</a> ·
+        <a href="{{ url_for('movimentacoes.historico', produto=produto.id, inicio='', fim='') }}">ver histórico</a>
       {% endif %}
     </div>
 

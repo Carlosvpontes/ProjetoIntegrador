@@ -104,6 +104,6 @@ ProjetoIntegrador/
   - [x] Criar conta, login e logout
   - [x] Painel com indicadores e alerta de estoque baixo
   - [x] Categorias, fornecedores e produtos (com pesquisa e filtro de estoque baixo)
-  - [ ] Entradas, saídas e histórico de movimentações
+  - [x] Entradas, saídas e histórico de movimentações
   - [ ] Publicação no PythonAnywhere
 - [ ] **Situação 3:** Testes com usuários, correções e laudo de qualidade

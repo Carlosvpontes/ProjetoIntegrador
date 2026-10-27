@@ -4,6 +4,10 @@
 {% block conteudo %}
 <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
   <h1 class="h3 mb-0">Painel</h1>
+  <div>
+    <a class="btn btn-success" href="{{ url_for('movimentacoes.nova', tipo='entrada') }}"><i class="bi bi-plus-circle"></i> Nova entrada</a>
+    <a class="btn btn-danger" href="{{ url_for('movimentacoes.nova', tipo='saida') }}"><i class="bi bi-dash-circle"></i> Nova saída</a>
+  </div>
 </div>
 
 {% if estoque_baixo %}
@@ -56,7 +60,10 @@
   </div>
   <div class="col-lg-6">
     <div class="card shadow-sm">
-      <div class="card-header"><i class="bi bi-clock-history"></i> <strong>Últimas movimentações</strong></div>
+      <div class="card-header d-flex justify-content-between">
+        <span><i class="bi bi-clock-history"></i> <strong>Últimas movimentações</strong></span>
+        <a href="{{ url_for('movimentacoes.historico') }}">Ver histórico <i class="bi bi-arrow-right"></i></a>
+      </div>
       <div class="table-responsive">
         <table class="table table-striped mb-0">
           <thead><tr><th>Data/hora</th><th>Tipo</th><th>Produto</th><th class="text-end">Qtd</th></tr></thead>

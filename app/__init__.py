@@ -45,9 +45,9 @@ def create_app(config_class=Config):
     def carregar_usuario(usuario_id):
         return db.session.get(Usuario, int(usuario_id))
 
-    from app.controllers import auth, categorias, fornecedores, painel, produtos
+    from app.controllers import auth, categorias, fornecedores, movimentacoes, painel, produtos
 
-    for modulo in (auth, painel, categorias, fornecedores, produtos):
+    for modulo in (auth, painel, categorias, fornecedores, produtos, movimentacoes):
         app.register_blueprint(modulo.bp)
 
     app.jinja_env.filters["moeda"] = formatar_moeda
