@@ -15,11 +15,12 @@ class Produto(db.Model):
         db.CheckConstraint("preco_venda >= 0", name="ck_produto_preco_venda"),  # RN12
         db.CheckConstraint("estoque_minimo >= 0", name="ck_produto_estoque_minimo"),
         db.CheckConstraint("quantidade_atual >= 0", name="ck_produto_quantidade_atual"),
+        db.Index("idx_produto_nome", "nome"),  # RF10
     )
 
     id = db.Column(db.Integer, primary_key=True)
     codigo = db.Column(db.String(30), nullable=False, unique=True)  # RN05
-    nome = db.Column(db.String(100), nullable=False, index=True)
+    nome = db.Column(db.String(100), nullable=False)
     descricao = db.Column(db.String(255))
     categoria_id = db.Column(db.Integer, db.ForeignKey("categoria.id", ondelete="RESTRICT"), nullable=False)
     fornecedor_id = db.Column(db.Integer, db.ForeignKey("fornecedor.id", ondelete="RESTRICT"))

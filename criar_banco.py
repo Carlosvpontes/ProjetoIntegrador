@@ -11,7 +11,7 @@ import sys
 from datetime import timedelta
 from decimal import Decimal
 
-from sqlalchemy import select
+from sqlalchemy import select, text
 
 from app import create_app
 from app.extensions import db
@@ -86,6 +86,12 @@ def inserir_dados_exemplo():
 def main():
     app = create_app()
     with app.app_context():
+        if db.engine.url.get_backend_name() == "mysql":
+            # Garante acentos corretos (ex.: "Café") nas tabelas criadas a seguir
+            with db.engine.begin() as conexao:
+                conexao.execute(text(
+                    f"ALTER DATABASE `{db.engine.url.database}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
+                ))
         if "--recriar" in sys.argv:
             db.drop_all()
             print("Tabelas apagadas.")
