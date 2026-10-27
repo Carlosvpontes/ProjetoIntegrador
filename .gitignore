@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Ambiente virtual
+.venv/
+venv/
+
+# Configurações locais e senhas (nunca publicar)
+.env
+instance/
+
+# Banco de dados local (SQLite)
+*.db
+*.sqlite3
+
+# Editores e sistema
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Arquivos pessoais da entrega (contêm RGM)
+PIT_atividade*.docx
+~$*.docx
