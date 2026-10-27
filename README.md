@@ -1,4 +1,6 @@
-# Projeto Integrador Transdisciplinar em Engenharia de Software II
+# EstoqueFácil: Controle de Estoque para Pequenos Comércios
+
+**Projeto Integrador Transdisciplinar em Engenharia de Software II**
 
 > 🚧 **Em desenvolvimento**
 
@@ -6,7 +8,21 @@
 
 ## Sobre o projeto
 
-_Descrição do sistema, do problema que resolve e do público-alvo (será preenchida na Situação 1)._
+Pequenos comércios costumam controlar o estoque em cadernos ou planilhas, o que causa falta de
+produtos, compras desnecessárias e nenhum histórico de quem retirou ou repôs mercadoria.
+
+O **EstoqueFácil** é um sistema web simples para o comerciante saber, a qualquer momento,
+**o que tem, quanto tem e o que precisa repor**:
+
+- Cadastro de produtos, categorias e fornecedores;
+- Registro de entradas e saídas de mercadoria, com data, hora e responsável;
+- Bloqueio de saídas maiores que o estoque disponível;
+- Alerta automático de produtos com estoque baixo;
+- Painel com a situação geral do estoque.
+
+![Painel do EstoqueFácil (protótipo)](docs/situacao-1/prototipo/prints/t03-painel.png)
+
+📄 Documentação completa do planejamento: [docs/situacao-1](docs/situacao-1/README.md)
 
 ## Links
 
