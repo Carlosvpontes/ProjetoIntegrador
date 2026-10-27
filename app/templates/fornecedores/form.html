@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% from "_macros.html" import campo, botoes_formulario %}
+{% block titulo %}{{ "Novo fornecedor" if novo else "Editar fornecedor" }}{% endblock %}
+
+{% block conteudo %}
+<h1 class="h3 mb-3">{{ "Novo fornecedor" if novo else "Editar fornecedor" }}</h1>
+<div class="card shadow-sm form-estreito"><div class="card-body">
+  <form method="post" novalidate>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    {{ campo("nome", "Nome", form, erros, obrigatorio=True, maxlength=100, autofocus=True) }}
+    {{ campo("cnpj", "CNPJ", form, erros, maxlength=18, placeholder="Opcional — ex.: 12.345.678/0001-90", inputmode="numeric") }}
+    <div class="row">
+      <div class="col-md-6">{{ campo("telefone", "Telefone", form, erros, tipo="tel", maxlength=20, placeholder="Opcional — ex.: (41) 99999-0000") }}</div>
+      <div class="col-md-6">{{ campo("email", "E-mail", form, erros, tipo="email", maxlength=120, placeholder="Opcional") }}</div>
+    </div>
+    {{ botoes_formulario(url_for('fornecedores.lista')) }}
+  </form>
+</div></div>
+{% endblock %}

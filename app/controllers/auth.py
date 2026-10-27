@@ -1,17 +1,16 @@
 """Criar conta, entrar e sair (RF01, RF02)."""
-import re
 from urllib.parse import urlsplit
 
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 from sqlalchemy import select
 
+from app.controllers.formularios import EMAIL_VALIDO
 from app.extensions import db
 from app.models import Usuario
 
 bp = Blueprint("auth", __name__)
 
-EMAIL_VALIDO = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 TAMANHO_MINIMO_SENHA = 6  # RN08
 
 

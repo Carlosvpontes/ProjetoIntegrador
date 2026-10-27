@@ -8,6 +8,15 @@ body {
   font-weight: 700;
 }
 
+/* Largura máxima dos formulários de cadastro */
+.form-estreito {
+  max-width: 640px;
+}
+
+.form-largo {
+  max-width: 860px;
+}
+
 /* Login e criar conta: cartão centralizado */
 .tela-acesso {
   max-width: 420px;

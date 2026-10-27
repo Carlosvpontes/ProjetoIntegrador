@@ -10,3 +10,35 @@
     {% if ajuda %}<div class="form-text">{{ ajuda }}</div>{% endif %}
   </div>
 {%- endmacro %}
+
+{# Lista de seleção. opcoes = [(valor, texto), ...]; vazio = texto da opção "nenhum" #}
+{% macro selecao(nome, rotulo, opcoes, form, erros, obrigatorio=False, vazio="Selecione...") -%}
+  <div class="mb-3">
+    <label for="{{ nome }}" class="form-label">{{ rotulo }}{% if obrigatorio %} *{% endif %}</label>
+    <select id="{{ nome }}" name="{{ nome }}" class="form-select{% if erros.get(nome) %} is-invalid{% endif %}"
+            {% if obrigatorio %}required{% endif %}>
+      <option value="">{{ vazio }}</option>
+      {% for valor, texto in opcoes %}
+        <option value="{{ valor }}" {% if form.get(nome, '') == valor | string %}selected{% endif %}>{{ texto }}</option>
+      {% endfor %}
+    </select>
+    {% if erros.get(nome) %}<div class="invalid-feedback">{{ erros[nome] }}</div>{% endif %}
+  </div>
+{%- endmacro %}
+
+{# Botão "Excluir" que pede confirmação antes (M40) #}
+{% macro botao_excluir(url, nome) -%}
+  <form method="post" action="{{ url }}" class="d-inline"
+        data-confirmar="Tem certeza que deseja excluir &quot;{{ nome }}&quot;? Esta ação não pode ser desfeita.">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i> Excluir</button>
+  </form>
+{%- endmacro %}
+
+{# Botões padrão do formulário: ação principal azul à esquerda, Cancelar cinza ao lado #}
+{% macro botoes_formulario(url_cancelar) -%}
+  <div class="mt-2">
+    <button class="btn btn-primary"><i class="bi bi-check-lg"></i> Salvar</button>
+    <a class="btn btn-secondary" href="{{ url_cancelar }}">Cancelar</a>
+  </div>
+{%- endmacro %}

@@ -5,7 +5,7 @@ import pytest
 
 from app import create_app
 from app.extensions import db
-from app.models import Categoria, Produto, Usuario
+from app.models import Categoria, Fornecedor, Produto, Usuario
 from config import TestConfig
 
 SENHA_PADRAO = "senha123"
@@ -47,6 +47,14 @@ def categoria(app):
     db.session.add(categoria)
     db.session.commit()
     return categoria
+
+
+@pytest.fixture
+def fornecedor(app):
+    fornecedor = Fornecedor(nome="Distribuidora Sul", cnpj="12345678000190")
+    db.session.add(fornecedor)
+    db.session.commit()
+    return fornecedor
 
 
 @pytest.fixture

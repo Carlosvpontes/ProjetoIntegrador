@@ -103,7 +103,7 @@ ProjetoIntegrador/
   - [x] Estrutura MVC, banco de dados e regras de negócio
   - [x] Criar conta, login e logout
   - [x] Painel com indicadores e alerta de estoque baixo
-  - [ ] Categorias, fornecedores e produtos
+  - [x] Categorias, fornecedores e produtos (com pesquisa e filtro de estoque baixo)
   - [ ] Entradas, saídas e histórico de movimentações
   - [ ] Publicação no PythonAnywhere
 - [ ] **Situação 3:** Testes com usuários, correções e laudo de qualidade

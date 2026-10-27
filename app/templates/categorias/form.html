@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% from "_macros.html" import campo, botoes_formulario %}
+{% block titulo %}{{ "Nova categoria" if nova else "Editar categoria" }}{% endblock %}
+
+{% block conteudo %}
+<h1 class="h3 mb-3">{{ "Nova categoria" if nova else "Editar categoria" }}</h1>
+<div class="card shadow-sm form-estreito"><div class="card-body">
+  <form method="post" novalidate>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    {{ campo("nome", "Nome", form, erros, obrigatorio=True, maxlength=60, autofocus=True) }}
+    {{ campo("descricao", "Descrição", form, erros, maxlength=255, placeholder="Opcional") }}
+    {{ botoes_formulario(url_for('categorias.lista')) }}
+  </form>
+</div></div>
+{% endblock %}

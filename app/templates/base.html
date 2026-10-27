@@ -14,10 +14,10 @@
   {# (endpoint, ícone, rótulo, blueprint). Endpoint None = funcionalidade ainda em desenvolvimento #}
   {% set itens_menu = [
     ("painel.index", "speedometer2", "Painel", "painel"),
-    (None, "boxes", "Produtos", "produtos"),
+    ("produtos.lista", "boxes", "Produtos", "produtos"),
     (None, "arrow-left-right", "Movimentações", "movimentacoes"),
-    (None, "tags", "Categorias", "categorias"),
-    (None, "truck", "Fornecedores", "fornecedores"),
+    ("categorias.lista", "tags", "Categorias", "categorias"),
+    ("fornecedores.lista", "truck", "Fornecedores", "fornecedores"),
   ] %}
   <nav class="navbar navbar-expand-md navbar-dark bg-primary mb-4">
     <div class="container">

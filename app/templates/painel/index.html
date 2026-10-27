@@ -47,6 +47,11 @@
           </tbody>
         </table>
       </div>
+      {% if estoque_baixo %}
+        <div class="card-footer text-end">
+          <a href="{{ url_for('produtos.lista', situacao='baixo') }}">Ver todos com estoque baixo <i class="bi bi-arrow-right"></i></a>
+        </div>
+      {% endif %}
     </div>
   </div>
   <div class="col-lg-6">

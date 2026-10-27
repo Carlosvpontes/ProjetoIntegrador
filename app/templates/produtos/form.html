@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% from "_macros.html" import campo, selecao, botoes_formulario %}
+{% block titulo %}{{ "Novo produto" if novo else "Editar produto" }}{% endblock %}
+
+{% block conteudo %}
+<h1 class="h3 mb-3">{{ "Novo produto" if novo else "Editar produto" }}</h1>
+
+{% if not opcoes_categorias %}
+  <div class="alert alert-warning">
+    <i class="bi bi-exclamation-triangle"></i> Antes de cadastrar produtos, é preciso ter pelo menos uma categoria.
+    <a href="{{ url_for('categorias.nova') }}">Cadastrar categoria</a>
+  </div>
+{% endif %}
+
+<div class="card shadow-sm form-largo"><div class="card-body">
+  <form method="post" novalidate>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="row">
+      <div class="col-md-4">{{ campo("codigo", "Código", form, erros, obrigatorio=True, maxlength=30, autofocus=(true if novo else none), ajuda="Interno ou de barras.") }}</div>
+      <div class="col-md-8">{{ campo("nome", "Nome", form, erros, obrigatorio=True, maxlength=100) }}</div>
+    </div>
+    {{ campo("descricao", "Descrição", form, erros, maxlength=255, placeholder="Opcional") }}
+    <div class="row">
+      <div class="col-md-6">{{ selecao("categoria_id", "Categoria", opcoes_categorias, form, erros, obrigatorio=True) }}</div>
+      <div class="col-md-6">{{ selecao("fornecedor_id", "Fornecedor", opcoes_fornecedores, form, erros, vazio="— Nenhum —") }}</div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">{{ campo("preco_custo", "Preço de custo (R$)", form, erros, inputmode="decimal", placeholder="0,00") }}</div>
+      <div class="col-md-4">{{ campo("preco_venda", "Preço de venda (R$)", form, erros, inputmode="decimal", placeholder="0,00") }}</div>
+      <div class="col-md-4">{{ campo("estoque_minimo", "Estoque mínimo", form, erros, inputmode="numeric", ajuda="Abaixo ou igual a este número, o produto entra no alerta.") }}</div>
+    </div>
+
+    <div class="alert alert-light border small">
+      <i class="bi bi-info-circle"></i>
+      {% if novo %}
+        O produto começa com estoque zero. Para adicionar unidades, registre uma <strong>entrada</strong>.
+      {% else %}
+        Estoque atual: <strong>{{ produto.quantidade_atual }} unidade(s)</strong>. O estoque só muda por meio de entradas e saídas.
+      {% endif %}
+    </div>
+
+    {{ botoes_formulario(url_for('produtos.lista')) }}
+  </form>
+</div></div>
+{% endblock %}

@@ -1,5 +1,5 @@
 """Testes do painel (RF09) e das páginas de erro (T13)."""
-from app import formatar_moeda
+from app.formatacao import formatar_moeda
 from app.extensions import db
 
 

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% from "_macros.html" import botao_excluir %}
+{% block titulo %}Fornecedores{% endblock %}
+
+{% block conteudo %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+  <h1 class="h3 mb-0">Fornecedores</h1>
+  <a class="btn btn-primary" href="{{ url_for('fornecedores.novo') }}"><i class="bi bi-plus-lg"></i> Novo fornecedor</a>
+</div>
+
+<div class="card shadow-sm"><div class="table-responsive">
+  <table class="table table-striped table-hover align-middle mb-0">
+    <thead><tr><th>Nome</th><th>CNPJ</th><th>Telefone</th><th>E-mail</th><th class="text-end">Produtos</th><th class="text-end">Ações</th></tr></thead>
+    <tbody>
+      {% for fornecedor in fornecedores %}
+        <tr>
+          <td>{{ fornecedor.nome }}</td>
+          <td class="text-nowrap">{{ fornecedor.cnpj | cnpj }}</td>
+          <td class="text-nowrap">{{ fornecedor.telefone or "" }}</td>
+          <td>{{ fornecedor.email or "" }}</td>
+          <td class="text-end">{{ fornecedor.produtos | length }}</td>
+          <td class="text-end text-nowrap">
+            <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('fornecedores.editar', id=fornecedor.id) }}"><i class="bi bi-pencil"></i> Editar</a>
+            {{ botao_excluir(url_for('fornecedores.excluir', id=fornecedor.id), fornecedor.nome) }}
+          </td>
+        </tr>
+      {% else %}
+        <tr><td colspan="6" class="text-center text-muted py-4">Nenhum registro encontrado.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div></div>
+{% endblock %}

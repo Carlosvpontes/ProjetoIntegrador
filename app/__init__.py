@@ -8,6 +8,7 @@ from sqlalchemy import event
 from sqlalchemy.engine import Engine
 
 from app.extensions import csrf, db, login_manager
+from app.formatacao import formatar_cnpj, formatar_data_hora, formatar_decimal, formatar_moeda
 from config import Config
 
 
@@ -18,16 +19,6 @@ def _ativar_chaves_estrangeiras_sqlite(conexao, _registro):
         cursor = conexao.cursor()
         cursor.execute("PRAGMA foreign_keys=ON")
         cursor.close()
-
-
-def formatar_moeda(valor):
-    """1234.5 -> 'R$ 1.234,50'"""
-    texto = f"{valor or 0:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-    return f"R$ {texto}"
-
-
-def formatar_data_hora(valor, formato="%d/%m/%Y %H:%M"):
-    return valor.strftime(formato) if valor else ""
 
 
 def create_app(config_class=Config):
@@ -54,13 +45,15 @@ def create_app(config_class=Config):
     def carregar_usuario(usuario_id):
         return db.session.get(Usuario, int(usuario_id))
 
-    from app.controllers import auth, painel
+    from app.controllers import auth, categorias, fornecedores, painel, produtos
 
-    app.register_blueprint(auth.bp)
-    app.register_blueprint(painel.bp)
+    for modulo in (auth, painel, categorias, fornecedores, produtos):
+        app.register_blueprint(modulo.bp)
 
     app.jinja_env.filters["moeda"] = formatar_moeda
+    app.jinja_env.filters["decimal"] = formatar_decimal
     app.jinja_env.filters["data_hora"] = formatar_data_hora
+    app.jinja_env.filters["cnpj"] = formatar_cnpj
 
     @app.errorhandler(404)
     def pagina_nao_encontrada(_erro):
