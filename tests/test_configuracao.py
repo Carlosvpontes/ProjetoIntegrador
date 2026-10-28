@@ -54,5 +54,25 @@ def test_carregar_env_nao_sobrescreve_variavel_existente(tmp_path, monkeypatch):
     assert os.environ["TESTE_VARIAVEL"] == "original"
 
 
+def test_protecao_csrf_continua_ligada_em_producao():
+    from config import Config
+
+    assert Config.SESSION_COOKIE_SAMESITE == "Lax"
+    assert getattr(Config, "WTF_CSRF_ENABLED", True) is True  # token obrigatório em todo formulário
+
+
+def test_formulario_sem_token_csrf_e_rejeitado():
+    from app import create_app
+    from config import Config
+
+    class ConfigComCsrf(Config):
+        TESTING = True
+        SQLALCHEMY_DATABASE_URI = "sqlite://"
+
+    app = create_app(ConfigComCsrf)
+    resposta = app.test_client().post("/login", data={"email": "x@x.com", "senha": "123456"}, follow_redirects=True)
+    assert "Sua sessão expirou. Tente novamente." in resposta.get_data(as_text=True)
+
+
 def test_arquivo_env_inexistente_e_ignorado(tmp_path):
     carregar_env(tmp_path / "nao-existe.env")  # não deve gerar erro

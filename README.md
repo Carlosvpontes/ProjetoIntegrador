@@ -28,7 +28,7 @@ O **EstoqueFácil** é um sistema web simples para o comerciante saber, a qualqu
 
 | Item | Link |
 |---|---|
-| Sistema em funcionamento | _a definir_ |
+| Sistema em funcionamento | **https://estoquefacil-f1t6.onrender.com** (login de demonstração: `demo@estoquefacil.com` / `demo123`) — no plano gratuito, o primeiro acesso pode levar ~1 minuto |
 | Vídeo de demonstração (narrado) | _a definir_ |
 | Vídeo da solução atualizada | _a definir_ |
 
@@ -106,5 +106,5 @@ ProjetoIntegrador/
   - [x] Painel com indicadores e alerta de estoque baixo
   - [x] Categorias, fornecedores e produtos (com pesquisa e filtro de estoque baixo)
   - [x] Entradas, saídas e histórico de movimentações
-  - [ ] Publicação no Render + Neon
+  - [x] Publicação no Render + Neon
 - [ ] **Situação 3:** Testes com usuários, correções e laudo de qualidade

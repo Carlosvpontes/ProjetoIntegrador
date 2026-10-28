@@ -52,6 +52,11 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     # No Render o site é acessado só por HTTPS: o cookie de login nunca trafega sem criptografia
     SESSION_COOKIE_SECURE = os.environ.get("RENDER") == "true"
+    # O cookie de login não é enviado em formulários vindos de outros sites (proteção CSRF extra)
+    SESSION_COOKIE_SAMESITE = "Lax"
+    # O token CSRF continua obrigatório em todo formulário; apenas não exige o cabeçalho
+    # Referer, que navegadores com extensões de privacidade costumam remover
+    WTF_CSRF_SSL_STRICT = False
 
 
 class TestConfig(Config):
