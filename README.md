@@ -38,9 +38,9 @@ O **EstoqueFácil** é um sistema web simples para o comerciante saber, a qualqu
 |---|---|
 | Back-end | Python 3 + Flask (arquitetura MVC) |
 | Front-end | HTML5, CSS3 (Bootstrap), JavaScript |
-| Banco de dados | MySQL (produção) / SQLite (desenvolvimento local) |
+| Banco de dados | PostgreSQL no [Neon](https://neon.tech) (produção) / SQLite (desenvolvimento local) |
 | Testes | pytest |
-| Hospedagem | PythonAnywhere |
+| Hospedagem | [Render](https://render.com) (plano gratuito) — ver [guia de publicação](docs/situacao-2/publicacao-render-neon.md) |
 | Modo de codificação | Tradicional |
 
 ## Como executar no seu computador (Windows)
@@ -63,7 +63,7 @@ um banco SQLite com dados de exemplo em `instance/estoque.db`.
 flowchart LR
     U[Usuário<br/>navegador] -->|requisição HTTP| C[Controller<br/>app/controllers]
     C -->|lê e altera| M[Model<br/>app/models]
-    M <-->|SQLAlchemy| DB[(MySQL / SQLite)]
+    M <-->|SQLAlchemy| DB[(PostgreSQL / SQLite)]
     C -->|dados| V[View<br/>app/templates]
     V -->|HTML| U
 ```
@@ -90,8 +90,9 @@ ProjetoIntegrador/
 │   ├── situacao-2/    → Manual de uso e evidências dos testes
 │   └── situacao-3/    → Plano de testes, avaliações e laudo de qualidade
 ├── config.py          → Configurações (banco, chave secreta)
+├── render.yaml        → Configuração da publicação no Render
 ├── criar_banco.py     → Cria as tabelas e os dados de exemplo
-├── run.py             → Inicia o sistema localmente
+├── run.py             → Inicia o sistema (local e no Render via gunicorn)
 ├── rodar_local.bat    → Duplo clique: abre o sistema
 └── rodar_testes.bat   → Duplo clique: roda os testes
 ```
@@ -105,5 +106,5 @@ ProjetoIntegrador/
   - [x] Painel com indicadores e alerta de estoque baixo
   - [x] Categorias, fornecedores e produtos (com pesquisa e filtro de estoque baixo)
   - [x] Entradas, saídas e histórico de movimentações
-  - [ ] Publicação no PythonAnywhere
+  - [ ] Publicação no Render + Neon
 - [ ] **Situação 3:** Testes com usuários, correções e laudo de qualidade

@@ -86,9 +86,9 @@ a qualquer momento, **o que tem, quanto tem e o que precisa repor**.
 | **RNF06** | Desempenho | Páginas devem carregar em até 2 segundos em uso normal |
 | **RNF07** | Compatibilidade | Funcionar nos navegadores Chrome, Edge e Firefox atualizados |
 | **RNF08** | Arquitetura | Back-end em Python (Flask) no padrão MVC |
-| **RNF09** | Dados | Banco de dados MySQL, com integridade referencial (chaves estrangeiras) |
+| **RNF09** | Dados | Banco de dados PostgreSQL (Neon), com integridade referencial (chaves estrangeiras) |
 | **RNF10** | Qualidade | Testes automatizados com pytest para regras de negócio, controllers e telas |
-| **RNF11** | Disponibilidade | Publicado na internet (PythonAnywhere) e acessível por um link |
+| **RNF11** | Disponibilidade | Publicado na internet (Render) e acessível por um link |
 | **RNF12** | Manutenibilidade | Código-fonte aberto e versionado no GitHub |
 
 ---

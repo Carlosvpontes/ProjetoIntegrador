@@ -179,7 +179,7 @@ sequenceDiagram
     participant C as Controller<br/>(movimentacoes)
     participant P as Model<br/>Produto
     participant M as Model<br/>Movimentacao
-    participant DB as Banco de dados<br/>(MySQL)
+    participant DB as Banco de dados<br/>(PostgreSQL)
 
     U->>V: Abre "Nova saída"
     V->>C: GET /movimentacoes/saida

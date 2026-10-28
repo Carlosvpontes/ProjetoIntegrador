@@ -5,7 +5,7 @@ O código-fonte está nas pastas `app/` e `tests/` na raiz do repositório.
 
 | Documento | Conteúdo | Status |
 |---|---|---|
-| [publicacao-pythonanywhere.md](publicacao-pythonanywhere.md) | Passo a passo da publicação no PythonAnywhere | ✅ |
+| [publicacao-render-neon.md](publicacao-render-neon.md) | Passo a passo da publicação no Render (site) + Neon (banco PostgreSQL) | ✅ |
 | `manual-de-uso.md` + `prints/` | Como usar o sistema, tela por tela | ⏳ |
 | `evidencia-testes.png` | Resultado dos testes automatizados (pytest) | ⏳ |
 | Vídeo narrado (mín. 5 min) | Link no README principal | ⏳ |

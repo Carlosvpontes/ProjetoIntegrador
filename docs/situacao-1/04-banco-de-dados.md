@@ -6,8 +6,8 @@ O banco foi projetado em três níveis, a partir do [diagrama de classes](02-mod
 2. **Lógico:** tabelas, colunas, chaves e normalização;
 3. **Físico:** os comandos SQL para o SGBD escolhido, em [`database/schema.sql`](../../database/schema.sql).
 
-**SGBD:** MySQL 8 (motor InnoDB, codificação `utf8mb4`). É um SGBD popular, gratuito, de fácil
-manutenção e disponível na hospedagem escolhida (PythonAnywhere).
+**SGBD:** PostgreSQL 16+, hospedado no [Neon](https://neon.tech) (plano gratuito). É um SGBD popular, gratuito,
+de código aberto, de fácil manutenção e amplamente usado no mercado.
 
 ---
 
@@ -39,7 +39,7 @@ erDiagram
         VARCHAR nome
         VARCHAR email UK
         VARCHAR senha_hash
-        DATETIME criado_em
+        TIMESTAMP criado_em
     }
     categoria {
         INT id PK
@@ -49,7 +49,7 @@ erDiagram
     fornecedor {
         INT id PK
         VARCHAR nome
-        CHAR cnpj UK
+        VARCHAR cnpj UK
         VARCHAR telefone
         VARCHAR email
     }
@@ -64,8 +64,8 @@ erDiagram
         DECIMAL preco_venda
         INT estoque_minimo
         INT quantidade_atual
-        DATETIME criado_em
-        DATETIME atualizado_em
+        TIMESTAMP criado_em
+        TIMESTAMP atualizado_em
     }
     movimentacao {
         INT id PK
@@ -74,7 +74,7 @@ erDiagram
         ENUM tipo
         INT quantidade
         VARCHAR observacao
-        DATETIME data_hora
+        TIMESTAMP data_hora
     }
 
     categoria ||--o{ produto : "categoria_id"
@@ -113,7 +113,7 @@ por dois motivos:
 
 Para garantir que o valor nunca fique diferente do histórico: (a) a quantidade **não pode ser
 editada** pelo usuário (RN03); (b) ela só é alterada pelo sistema **na mesma transação** que grava
-a movimentação; (c) o banco impede valores negativos (`UNSIGNED`).
+a movimentação; (c) o banco impede valores negativos (`CHECK (quantidade_atual >= 0)`).
 
 ---
 
@@ -122,14 +122,14 @@ a movimentação; (c) o banco impede valores negativos (`UNSIGNED`).
 O script completo está em [`database/schema.sql`](../../database/schema.sql). Restrições
 implementadas diretamente no banco:
 
-| Regra | Implementação no MySQL |
+| Regra | Implementação no PostgreSQL |
 |---|---|
 | RN05: código do produto único | `UNIQUE (codigo)` |
 | RN06: não excluir categoria/fornecedor com produtos | `FOREIGN KEY ... ON DELETE RESTRICT` |
 | RN07: não excluir produto com movimentações | `FOREIGN KEY ... ON DELETE RESTRICT` |
 | RN08: e-mail único | `UNIQUE (email)` |
 | RN02: quantidade maior que zero | `CHECK (quantidade > 0)` |
-| RN03: estoque nunca negativo | `quantidade_atual INT UNSIGNED` |
+| RN03: estoque nunca negativo | `CHECK (quantidade_atual >= 0)` |
 | RN12: preços não negativos | `CHECK (preco_custo >= 0)` e `CHECK (preco_venda >= 0)` |
 | RN10: data e hora automáticas | `DEFAULT CURRENT_TIMESTAMP` |
 
@@ -151,17 +151,17 @@ implementadas diretamente no banco:
 
 | Coluna | Tipo | Restrições | Domínio / formato | Descrição |
 |---|---|---|---|---|
-| id | INT UNSIGNED | PK, AI, NN | 1, 2, 3… | Identificador do usuário |
+| id | SERIAL | PK, AI, NN | 1, 2, 3… | Identificador do usuário |
 | nome | VARCHAR(100) | NN | 2 a 100 caracteres | Nome completo |
 | email | VARCHAR(120) | UK, NN | E-mail válido (ex.: `ana@email.com`) | Usado no login |
 | senha_hash | VARCHAR(255) | NN | Hash gerado pelo sistema | Senha criptografada. A senha original tem no mínimo 6 caracteres (RN08) |
-| criado_em | DATETIME | NN, padrão = agora | Data e hora | Quando a conta foi criada |
+| criado_em | TIMESTAMP | NN, padrão = agora | Data e hora | Quando a conta foi criada |
 
 ### Tabela `categoria`: agrupamento de produtos
 
 | Coluna | Tipo | Restrições | Domínio / formato | Descrição |
 |---|---|---|---|---|
-| id | INT UNSIGNED | PK, AI, NN | 1, 2, 3… | Identificador da categoria |
+| id | SERIAL | PK, AI, NN | 1, 2, 3… | Identificador da categoria |
 | nome | VARCHAR(60) | UK, NN | 2 a 60 caracteres | Ex.: "Bebidas", "Limpeza" |
 | descricao | VARCHAR(255) | — | Até 255 caracteres | Descrição opcional |
 
@@ -169,9 +169,9 @@ implementadas diretamente no banco:
 
 | Coluna | Tipo | Restrições | Domínio / formato | Descrição |
 |---|---|---|---|---|
-| id | INT UNSIGNED | PK, AI, NN | 1, 2, 3… | Identificador do fornecedor |
+| id | SERIAL | PK, AI, NN | 1, 2, 3… | Identificador do fornecedor |
 | nome | VARCHAR(100) | NN | 2 a 100 caracteres | Razão social ou nome fantasia |
-| cnpj | CHAR(14) | UK | Exatamente 14 dígitos, sem pontuação | CNPJ (opcional) |
+| cnpj | VARCHAR(14) | UK, CHECK 14 dígitos | Exatamente 14 dígitos, sem pontuação | CNPJ (opcional) |
 | telefone | VARCHAR(20) | — | Ex.: `(41) 99999-0000` | Telefone de contato (opcional) |
 | email | VARCHAR(120) | — | E-mail válido | E-mail de contato (opcional) |
 
@@ -179,27 +179,27 @@ implementadas diretamente no banco:
 
 | Coluna | Tipo | Restrições | Domínio / formato | Descrição |
 |---|---|---|---|---|
-| id | INT UNSIGNED | PK, AI, NN | 1, 2, 3… | Identificador do produto |
+| id | SERIAL | PK, AI, NN | 1, 2, 3… | Identificador do produto |
 | codigo | VARCHAR(30) | UK, NN | Letras, números e hífen | Código interno ou de barras (RN05) |
 | nome | VARCHAR(100) | NN | 2 a 100 caracteres | Nome do produto |
 | descricao | VARCHAR(255) | — | Até 255 caracteres | Descrição opcional |
-| categoria_id | INT UNSIGNED | FK → categoria.id, NN | Categoria existente | Categoria do produto |
-| fornecedor_id | INT UNSIGNED | FK → fornecedor.id | Fornecedor existente ou vazio | Fornecedor principal (opcional) |
+| categoria_id | INTEGER | FK → categoria.id, NN | Categoria existente | Categoria do produto |
+| fornecedor_id | INTEGER | FK → fornecedor.id | Fornecedor existente ou vazio | Fornecedor principal (opcional) |
 | preco_custo | DECIMAL(10,2) | NN, ≥ 0, padrão 0 | 0,00 a 99.999.999,99 | Preço pago ao fornecedor (RN12) |
 | preco_venda | DECIMAL(10,2) | NN, ≥ 0, padrão 0 | 0,00 a 99.999.999,99 | Preço de venda ao cliente (RN12) |
-| estoque_minimo | INT UNSIGNED | NN, padrão 0 | 0 ou mais | Abaixo ou igual a este valor = estoque baixo (RN04) |
-| quantidade_atual | INT UNSIGNED | NN, padrão 0 | 0 ou mais | Estoque atual. Alterado **somente** por movimentações (RN03) |
-| criado_em | DATETIME | NN, padrão = agora | Data e hora | Data de cadastro |
-| atualizado_em | DATETIME | NN, atualização automática | Data e hora | Data da última alteração |
+| estoque_minimo | INTEGER | NN, ≥ 0, padrão 0 | 0 ou mais | Abaixo ou igual a este valor = estoque baixo (RN04) |
+| quantidade_atual | INTEGER | NN, ≥ 0, padrão 0 | 0 ou mais | Estoque atual. Alterado **somente** por movimentações (RN03) |
+| criado_em | TIMESTAMP | NN, padrão = agora | Data e hora | Data de cadastro |
+| atualizado_em | TIMESTAMP | NN, atualização automática | Data e hora | Data da última alteração |
 
 ### Tabela `movimentacao`: entradas e saídas de mercadoria
 
 | Coluna | Tipo | Restrições | Domínio / formato | Descrição |
 |---|---|---|---|---|
-| id | INT UNSIGNED | PK, AI, NN | 1, 2, 3… | Identificador da movimentação |
-| produto_id | INT UNSIGNED | FK → produto.id, NN | Produto existente | Produto movimentado |
-| usuario_id | INT UNSIGNED | FK → usuario.id, NN | Usuário existente | Quem registrou (RN10) |
-| tipo | ENUM | NN | `ENTRADA` ou `SAIDA` | Tipo da movimentação |
-| quantidade | INT UNSIGNED | NN, > 0 | Inteiro maior que zero | Quantidade movimentada (RN02) |
+| id | SERIAL | PK, AI, NN | 1, 2, 3… | Identificador da movimentação |
+| produto_id | INTEGER | FK → produto.id, NN | Produto existente | Produto movimentado |
+| usuario_id | INTEGER | FK → usuario.id, NN | Usuário existente | Quem registrou (RN10) |
+| tipo | ENUM `tipo_movimentacao` | NN | `ENTRADA` ou `SAIDA` | Tipo da movimentação |
+| quantidade | INTEGER | NN, > 0 | Inteiro maior que zero | Quantidade movimentada (RN02) |
 | observacao | VARCHAR(255) | — | Até 255 caracteres | Motivo (ex.: "compra NF 123", "avaria") |
-| data_hora | DATETIME | NN, padrão = agora | Data e hora | Momento do registro (RN10) |
+| data_hora | TIMESTAMP | NN, padrão = agora | Data e hora | Momento do registro (RN10) |

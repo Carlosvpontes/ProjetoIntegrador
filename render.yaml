@@ -1,0 +1,18 @@
+# Configuração do site no Render ("Blueprint"). O Render lê este arquivo e cria o serviço.
+# Guia: docs/situacao-2/publicacao-render-neon.md
+services:
+  - type: web
+    name: estoquefacil
+    runtime: python
+    plan: free
+    region: virginia  # mesma região do banco no Neon (AWS US East 1)
+    # Instala as bibliotecas e cria/atualiza as tabelas no Neon a cada publicação
+    buildCommand: pip install -r requirements.txt && python criar_banco.py --exemplo
+    startCommand: gunicorn run:app
+    healthCheckPath: /login
+    autoDeploy: true  # publica sozinho a cada envio para o GitHub
+    envVars:
+      - key: DATABASE_URL
+        sync: false  # o Render pede para você colar a connection string do Neon
+      - key: SECRET_KEY
+        generateValue: true  # o Render gera uma chave secreta aleatória

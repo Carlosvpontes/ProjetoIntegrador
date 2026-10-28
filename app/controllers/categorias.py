@@ -45,7 +45,7 @@ def excluir(id):
 
 
 def _nome_em_uso(nome, ignorar_id):
-    """Compara sem diferenciar maiúsculas, como faz o MySQL."""
+    """Compara sem diferenciar maiúsculas: "Bebidas" e "bebidas" são o mesmo nome."""
     consulta = select(Categoria.id).where(func.lower(Categoria.nome) == nome.lower())
     if ignorar_id:
         consulta = consulta.where(Categoria.id != ignorar_id)

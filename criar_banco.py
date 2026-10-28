@@ -6,12 +6,17 @@ Uso:
     python criar_banco.py --recriar   APAGA TODOS OS DADOS e recria as tabelas vazias
 
 Usuário de exemplo: demo@estoquefacil.com / senha demo123
+
+No Render, "python criar_banco.py --exemplo" roda automaticamente a cada publicação
+(buildCommand do render.yaml). É seguro repetir: tabelas existentes e dados já
+cadastrados não são alterados.
 """
 import sys
 from datetime import timedelta
 from decimal import Decimal
 
-from sqlalchemy import select, text
+from sqlalchemy import select
+from sqlalchemy.exc import OperationalError
 
 from app import create_app
 from app.extensions import db
@@ -86,18 +91,19 @@ def inserir_dados_exemplo():
 def main():
     app = create_app()
     with app.app_context():
-        if db.engine.url.get_backend_name() == "mysql":
-            # Garante acentos corretos (ex.: "Café") nas tabelas criadas a seguir
-            with db.engine.begin() as conexao:
-                conexao.execute(text(
-                    f"ALTER DATABASE `{db.engine.url.database}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
-                ))
-        if "--recriar" in sys.argv:
-            db.drop_all()
-            print("Tabelas apagadas.")
-        db.create_all()
         url = db.engine.url
         local = url.database if url.get_backend_name() == "sqlite" else url.render_as_string(hide_password=True)
+        try:
+            if "--recriar" in sys.argv:
+                db.drop_all()
+                print("Tabelas apagadas.")
+            db.create_all()
+        except OperationalError as erro:
+            print("\n*** Não foi possível conectar ao banco de dados. ***")
+            print(f"Banco: {local}")
+            print(f"Motivo: {erro.orig}")
+            print("Confira a variável DATABASE_URL (connection string do Neon).")
+            sys.exit(1)
         print(f"Tabelas prontas em: {local}")
         if "--exemplo" in sys.argv:
             inserir_dados_exemplo()

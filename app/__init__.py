@@ -6,6 +6,7 @@ from flask import Flask, flash, redirect, render_template, request
 from flask_wtf.csrf import CSRFError
 from sqlalchemy import event
 from sqlalchemy.engine import Engine
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 from app.extensions import csrf, db, login_manager
 from app.formatacao import formatar_cnpj, formatar_data_hora, formatar_decimal, formatar_moeda
@@ -28,9 +29,17 @@ def create_app(config_class=Config):
     os.makedirs(app.instance_path, exist_ok=True)
     if not app.config.get("SQLALCHEMY_DATABASE_URI"):
         app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(app.instance_path, "estoque.db")
-    if app.config["SQLALCHEMY_DATABASE_URI"].startswith("mysql"):
-        # O MySQL do PythonAnywhere encerra conexões paradas há mais de 300 segundos
-        app.config.setdefault("SQLALCHEMY_ENGINE_OPTIONS", {"pool_recycle": 280, "pool_pre_ping": True})
+    if app.config["SQLALCHEMY_DATABASE_URI"].startswith("postgresql"):
+        app.config.setdefault("SQLALCHEMY_ENGINE_OPTIONS", {
+            # O Neon desliga o banco quando fica parado: testa a conexão antes de usar
+            "pool_pre_ping": True,
+            "pool_recycle": 300,
+            # Compatível com a conexão "pooled" do Neon (PgBouncer), caso seja a copiada
+            "connect_args": {"prepare_threshold": None},
+        })
+
+    # No Render o site fica atrás de um proxy HTTPS: assim o Flask enxerga o endereço real
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
 
     db.init_app(app)
     csrf.init_app(app)

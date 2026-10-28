@@ -1,26 +1,35 @@
-"""Testes da configuração de produção (.env e URL do MySQL)."""
+"""Testes da configuração de produção (connection string do Neon e arquivo .env)."""
 import os
 
-from sqlalchemy.engine import make_url
+import pytest
 
-from config import carregar_env
-from configurar_producao import montar_url
+from config import carregar_env, normalizar_url_banco
 
-
-def test_url_do_mysql_do_pythonanywhere():
-    url = montar_url("carlosvpontes", "segredo")
-    assert url.drivername == "mysql+pymysql"
-    assert url.host == "carlosvpontes.mysql.pythonanywhere-services.com"
-    assert url.database == "carlosvpontes$estoque"
-    assert url.query["charset"] == "utf8mb4"
+URL_NEON = "postgresql://neondb_owner:abc123@ep-cool-lab-a1b2c3.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+ESPERADO = "postgresql+psycopg://neondb_owner:abc123@ep-cool-lab-a1b2c3.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
 
 
-def test_senha_com_caracteres_especiais_sobrevive_ao_arquivo_env():
-    senha = "p@ss:w/rd#100%"
-    texto = montar_url("carlosvpontes", senha).render_as_string(hide_password=False)
-    lida = make_url(texto)
-    assert lida.password == senha
-    assert lida.database == "carlosvpontes$estoque"
+@pytest.mark.parametrize(
+    "copiado",
+    [
+        URL_NEON,
+        f"  {URL_NEON}  ",
+        f"'{URL_NEON}'",
+        f"psql '{URL_NEON}'",
+        URL_NEON.replace("postgresql://", "postgres://"),
+    ],
+)
+def test_connection_string_do_neon_e_convertida_para_o_driver_psycopg(copiado):
+    assert normalizar_url_banco(copiado) == ESPERADO
+
+
+def test_url_vazia_significa_usar_sqlite_local():
+    assert normalizar_url_banco(None) is None
+    assert normalizar_url_banco("") is None
+
+
+def test_outras_urls_nao_sao_alteradas():
+    assert normalizar_url_banco("sqlite:///estoque.db") == "sqlite:///estoque.db"
 
 
 def test_carregar_env(tmp_path, monkeypatch):
