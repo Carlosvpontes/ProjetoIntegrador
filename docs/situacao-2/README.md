@@ -6,6 +6,6 @@ O código-fonte está nas pastas `app/` e `tests/` na raiz do repositório.
 | Documento | Conteúdo | Status |
 |---|---|---|
 | [publicacao-render-neon.md](publicacao-render-neon.md) | Passo a passo da publicação no Render (site) + Neon (banco PostgreSQL) | ✅ |
-| `manual-de-uso.md` + `prints/` | Como usar o sistema, tela por tela | ⏳ |
+| [manual-de-uso.md](manual-de-uso.md) + [prints/](prints/) | Como usar o sistema, tela por tela | ✅ |
 | [evidencia-testes.txt](evidencia-testes.txt) | Resultado completo dos testes automatizados (169 aprovados) | ✅ |
 | [Vídeo narrado](https://youtu.be/SlKI0vGyLEs) (13 min) | Demonstração do sistema em funcionamento | ✅ |

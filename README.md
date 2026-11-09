@@ -2,7 +2,7 @@
 
 **Projeto Integrador Transdisciplinar em Engenharia de Software II**
 
-> 🚧 **Em desenvolvimento**
+> ✅ **Publicado e em funcionamento**
 
 **Autor:** [@Carlosvpontes](https://github.com/Carlosvpontes)
 
@@ -100,11 +100,11 @@ ProjetoIntegrador/
 ## Andamento
 
 - [x] **Situação 1:** Documentação revisada
-- [ ] **Situação 2:** Codificação (front-end, back-end, testes, publicação)
+- [x] **Situação 2:** Codificação (front-end, back-end, testes, publicação)
   - [x] Estrutura MVC, banco de dados e regras de negócio
   - [x] Criar conta, login e logout
   - [x] Painel com indicadores e alerta de estoque baixo
   - [x] Categorias, fornecedores e produtos (com pesquisa e filtro de estoque baixo)
   - [x] Entradas, saídas e histórico de movimentações
   - [x] Publicação no Render + Neon
-- [ ] **Situação 3:** Testes com usuários, correções e laudo de qualidade
+- [x] **Situação 3:** Testes com usuários, correções e laudo de qualidade
