@@ -54,6 +54,12 @@ class Produto(db.Model):
         """RN04: estoque atual menor ou igual ao estoque mínimo."""
         return self.quantidade_atual <= self.estoque_minimo
 
+    def quantidade_sugerida(self):
+        """RF11: quanto comprar para o estoque chegar ao dobro do mínimo (ao menos 1 se estiver baixo)."""
+        if not self.estoque_baixo():
+            return 0
+        return max(self.estoque_minimo * 2 - self.quantidade_atual, 1)
+
     def valor_em_estoque(self):
         return Decimal(self.quantidade_atual) * Decimal(self.preco_custo)
 

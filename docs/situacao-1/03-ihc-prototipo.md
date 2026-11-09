@@ -132,6 +132,7 @@ flowchart TD
 | M33 | Faça login para acessar esta página. | RN09 |
 | M34 | Página não encontrada. | T13 (404) |
 | M35 | Ocorreu um erro inesperado. Tente novamente em instantes. | T13 (500) |
+| M36 | O preço de venda ({venda}) está menor que o preço de custo ({custo}). Corrija o valor ou confirme abaixo. | RN13 |
 
 ### Confirmação (janela de diálogo)
 | Código | Mensagem |

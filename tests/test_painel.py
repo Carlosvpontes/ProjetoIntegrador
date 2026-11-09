@@ -45,3 +45,12 @@ def test_formatar_moeda():
     assert formatar_moeda(1234.5) == "R$ 1.234,50"
     assert formatar_moeda(0) == "R$ 0,00"
     assert formatar_moeda(None) == "R$ 0,00"
+
+
+def test_painel_mostra_quantidade_sugerida(cliente_logado, produto, usuario):
+    produto.registrar_entrada(3, usuario)  # mínimo 5: sugere 5 x 2 - 3 = 7
+    db.session.commit()
+
+    texto = _texto(cliente_logado.get("/"))
+    assert "Sugestão de compra" in texto
+    assert '<td class="text-end fw-bold">7</td>' in texto

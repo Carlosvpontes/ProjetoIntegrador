@@ -3,11 +3,11 @@ import re
 
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import login_required
-from sqlalchemy import func, or_, select
+from sqlalchemy import func, select
 
-from app.controllers.formularios import ler_decimal, ler_inteiro_nao_negativo, padrao_busca, texto
+from app.controllers.formularios import ler_decimal, ler_inteiro_nao_negativo, normalizar_busca, texto
 from app.extensions import db
-from app.formatacao import formatar_decimal
+from app.formatacao import formatar_decimal, formatar_moeda
 from app.models import Categoria, Fornecedor, Produto
 
 bp = Blueprint("produtos", __name__, url_prefix="/produtos")
@@ -28,17 +28,19 @@ def lista():
     somente_baixo = request.args.get("situacao") == "baixo"
 
     consulta = select(Produto).order_by(Produto.nome)
-    if busca:  # RF10
-        padrao = padrao_busca(busca)
-        consulta = consulta.where(or_(Produto.nome.ilike(padrao, escape="\\"), Produto.codigo.ilike(padrao, escape="\\")))
     if categoria_id:
         consulta = consulta.where(Produto.categoria_id == categoria_id)
     if somente_baixo:  # RF11 / RN04
         consulta = consulta.where(Produto.quantidade_atual <= Produto.estoque_minimo)
 
+    produtos = db.session.scalars(consulta).all()
+    if busca:  # RF10: comparação em Python para ignorar acentos em qualquer banco de dados
+        termo = normalizar_busca(busca)
+        produtos = [p for p in produtos if termo in normalizar_busca(p.nome) or termo in normalizar_busca(p.codigo)]
+
     return render_template(
         "produtos/lista.html",
-        produtos=db.session.scalars(consulta).all(),
+        produtos=produtos,
         categorias=_categorias(),
         filtros={"q": busca, "categoria": categoria_id, "situacao": "baixo" if somente_baixo else ""},
         filtrando=bool(busca or categoria_id or somente_baixo),
@@ -95,6 +97,7 @@ def _ler_id(form, campo, modelo):
 def _formulario(produto):
     novo = produto.id is None
     erros = {}
+    pedir_confirmacao = False
 
     if request.method == "POST":
         form = request.form
@@ -127,6 +130,19 @@ def _formulario(produto):
                 valores[campo] = leitor(form.get(campo))
             except ValueError as erro:
                 erros[campo] = str(erro)  # M30 e validações numéricas (RN12)
+
+        pedir_confirmacao = (
+            "preco_venda" not in erros
+            and "preco_custo" not in erros
+            and valores["preco_venda"] < valores["preco_custo"]
+            and not form.get("confirmar_prejuizo")
+        )
+        if pedir_confirmacao:  # RN13
+            erros["preco_venda"] = (  # M36
+                f"O preço de venda ({formatar_moeda(valores['preco_venda'])}) está menor que o "
+                f"preço de custo ({formatar_moeda(valores['preco_custo'])}). "
+                "Corrija o valor ou confirme abaixo."
+            )
 
         if not erros:
             produto.codigo = codigo
@@ -163,6 +179,7 @@ def _formulario(produto):
         novo=novo,
         form=form,
         erros=erros,
+        pedir_confirmacao=pedir_confirmacao,
         opcoes_categorias=[(c.id, c.nome) for c in _categorias()],
         opcoes_fornecedores=[(f.id, f.nome) for f in _fornecedores()],
     )

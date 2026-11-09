@@ -163,3 +163,18 @@ def test_nome_de_categoria_e_unico(categoria):
     with pytest.raises(IntegrityError):
         db.session.commit()
     db.session.rollback()
+
+
+# ---------- RF11: quantidade sugerida para reposição ----------
+
+@pytest.mark.parametrize("quantidade, sugerida", [(0, 10), (2, 8), (5, 5), (6, 0)])
+def test_quantidade_sugerida_repoe_ate_o_dobro_do_minimo(produto, usuario, quantidade, sugerida):
+    if quantidade:  # mínimo do produto = 5
+        produto.registrar_entrada(quantidade, usuario)
+    assert produto.quantidade_sugerida() == sugerida
+
+
+def test_quantidade_sugerida_e_ao_menos_um_quando_minimo_e_zero(categoria):
+    produto = Produto(codigo="Z1", nome="Sem mínimo", categoria=categoria, estoque_minimo=0)
+    assert produto.estoque_baixo()
+    assert produto.quantidade_sugerida() == 1

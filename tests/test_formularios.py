@@ -3,7 +3,7 @@ from decimal import Decimal
 
 import pytest
 
-from app.controllers.formularios import ler_decimal, ler_inteiro_nao_negativo, padrao_busca, somente_digitos
+from app.controllers.formularios import ler_decimal, ler_inteiro_nao_negativo, normalizar_busca, somente_digitos
 from app.formatacao import formatar_cnpj, formatar_decimal
 
 
@@ -55,9 +55,12 @@ def test_somente_digitos():
     assert somente_digitos("12.345.678/0001-90") == "12345678000190"
 
 
-def test_padrao_busca_trata_caracteres_especiais_como_texto():
-    assert padrao_busca("50%") == "%50\\%%"
-    assert padrao_busca("a_b") == "%a\\_b%"
+@pytest.mark.parametrize(
+    "digitado, esperado",
+    [("Café", "cafe"), ("FEIJÃO", "feijao"), ("Sabão em Pó", "sabao em po"), ("50%", "50%"), ("", ""), (None, "")],
+)
+def test_normalizar_busca_ignora_acentos_e_maiusculas(digitado, esperado):
+    assert normalizar_busca(digitado) == esperado
 
 
 def test_formatar_cnpj():

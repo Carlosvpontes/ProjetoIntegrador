@@ -193,3 +193,48 @@ def test_filtro_estoque_baixo(cliente_logado, categoria, usuario):
 def test_pesquisa_sem_resultado(cliente_logado, categoria, usuario):
     _cadastrar_varios(categoria, usuario)
     assert "Nenhum registro encontrado." in _texto(cliente_logado.get("/produtos/?q=xyz"))  # M51
+
+
+# ---------- Melhorias pedidas pelos testadores ----------
+
+def test_pesquisa_ignora_acentos_nos_dois_sentidos(cliente_logado, categoria, usuario):
+    _cadastrar_varios(categoria, usuario)
+    assert _nomes_na_tabela(_texto(cliente_logado.get("/produtos/?q=feijao"))) == {"Feijão"}
+    assert _nomes_na_tabela(_texto(cliente_logado.get("/produtos/?q=FEIJÃO"))) == {"Feijão"}
+    assert _nomes_na_tabela(_texto(cliente_logado.get("/produtos/?q=arróz"))) == {"Arroz"}
+
+
+def test_filtro_estoque_baixo_mostra_quantidade_sugerida(cliente_logado, categoria, usuario):
+    _cadastrar_varios(categoria, usuario)  # Feijão: estoque 2, mínimo 5
+    texto = _texto(cliente_logado.get("/produtos/?situacao=baixo"))
+    assert "Sugestão de compra" in texto
+    assert '<td class="text-end fw-bold">8</td>' in texto
+    assert "Sugestão de compra" not in _texto(cliente_logado.get("/produtos/"))
+
+
+def test_venda_menor_que_custo_pede_confirmacao(cliente_logado, categoria):  # RN13
+    texto = _texto(_novo(cliente_logado, categoria, preco_custo="10,00", preco_venda="8,00"))
+    assert "O preço de venda (R$ 8,00) está menor que o preço de custo (R$ 10,00)." in texto  # M36
+    assert 'name="confirmar_prejuizo"' in texto
+    assert db.session.scalar(select(Produto)) is None
+
+
+def test_venda_menor_que_custo_com_confirmacao_e_salva(cliente_logado, categoria):
+    resposta = _novo(cliente_logado, categoria, preco_custo="10,00", preco_venda="8,00", confirmar_prejuizo="1")
+    assert "Produto cadastrado com sucesso." in _texto(resposta)
+    assert db.session.scalar(select(Produto)).preco_venda == Decimal("8.00")
+
+
+def test_venda_igual_ao_custo_nao_pede_confirmacao(cliente_logado, categoria):
+    resposta = _novo(cliente_logado, categoria, preco_custo="10,00", preco_venda="10,00")
+    assert "Produto cadastrado com sucesso." in _texto(resposta)
+
+
+def test_editar_para_venda_menor_que_custo_pede_confirmacao(cliente_logado, categoria, produto):
+    resposta = cliente_logado.post(
+        f"/produtos/{produto.id}/editar",
+        data=_dados(categoria, codigo="P001", preco_custo="20,00", preco_venda="15,00"),
+        follow_redirects=True,
+    )
+    assert "está menor que o preço de custo" in _texto(resposta)
+    assert produto.preco_venda == Decimal("27.90")

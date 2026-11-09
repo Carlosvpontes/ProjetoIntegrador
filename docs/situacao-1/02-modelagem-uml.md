@@ -121,6 +121,7 @@ classDiagram
         -int quantidade_atual
         -datetime criado_em
         +estoque_baixo() bool
+        +quantidade_sugerida() int
         +valor_em_estoque() Decimal
         +pode_excluir() bool
         +registrar_entrada(qtd, usuario, obs) Movimentacao

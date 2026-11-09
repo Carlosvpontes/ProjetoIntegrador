@@ -1,5 +1,6 @@
 """Leitura e validação dos campos de formulário, compartilhadas pelos controllers."""
 import re
+import unicodedata
 from decimal import ROUND_HALF_UP, Decimal, InvalidOperation
 
 EMAIL_VALIDO = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
@@ -53,7 +54,7 @@ def ler_inteiro_nao_negativo(valor):
     return numero
 
 
-def padrao_busca(termo):
-    """Monta o padrão do LIKE tratando % e _ digitados pelo usuário como texto comum."""
-    escapado = termo.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
-    return f"%{escapado}%"
+def normalizar_busca(texto_busca):
+    """Deixa o texto sem acentos e sem diferença de maiúsculas: 'Café' -> 'cafe'."""
+    decomposto = unicodedata.normalize("NFKD", texto_busca or "")
+    return "".join(c for c in decomposto if not unicodedata.combining(c)).casefold()

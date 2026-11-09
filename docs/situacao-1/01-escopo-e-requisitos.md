@@ -3,7 +3,7 @@
 | Item | Descrição |
 |---|---|
 | **Sistema** | EstoqueFácil: Controle de Estoque para Pequenos Comércios |
-| **Versão do documento** | 1.0 |
+| **Versão do documento** | 1.1 |
 | **Autor** | [@Carlosvpontes](https://github.com/Carlosvpontes) |
 | **Plataforma** | Aplicação Web |
 
@@ -49,13 +49,13 @@ a qualquer momento, **o que tem, quanto tem e o que precisa repor**.
 | **RF02** | Entrar (login) e sair (logout) do sistema | Essencial | RN09 |
 | **RF03** | Manter categorias: incluir, listar, editar e excluir | Essencial | RN06 |
 | **RF04** | Manter fornecedores: incluir, listar, editar e excluir (nome, CNPJ, telefone, e-mail) | Essencial | RN06 |
-| **RF05** | Manter produtos: incluir, listar, editar e excluir (código, nome, descrição, categoria, fornecedor, preço de custo, preço de venda, estoque mínimo) | Essencial | RN03, RN05, RN07 |
+| **RF05** | Manter produtos: incluir, listar, editar e excluir (código, nome, descrição, categoria, fornecedor, preço de custo, preço de venda, estoque mínimo) | Essencial | RN03, RN05, RN07, RN13 |
 | **RF06** | Registrar **entrada** de mercadoria (produto, quantidade, observação) | Essencial | RN02, RN10 |
 | **RF07** | Registrar **saída** de mercadoria (produto, quantidade, observação) | Essencial | RN01, RN02, RN10 |
 | **RF08** | Consultar histórico de movimentações, com filtro por produto, tipo (entrada/saída) e período | Essencial | RN11 |
 | **RF09** | Exibir painel inicial: total de produtos, valor total do estoque, produtos com estoque baixo e últimas movimentações | Essencial | RN04 |
-| **RF10** | Pesquisar produtos por nome ou código e filtrar por categoria | Desejável | — |
-| **RF11** | Listar todos os produtos com estoque baixo (relatório de reposição) | Desejável | RN04 |
+| **RF10** | Pesquisar produtos por nome ou código, sem diferenciar acentos nem maiúsculas, e filtrar por categoria | Desejável | — |
+| **RF11** | Listar todos os produtos com estoque baixo, com a quantidade sugerida para compra (dobro do mínimo menos o estoque atual) | Desejável | RN04 |
 
 ## 5. Regras de negócio (as "leis" do sistema)
 
@@ -73,6 +73,7 @@ a qualquer momento, **o que tem, quanto tem e o que precisa repor**.
 | **RN10** | Cada movimentação registra **automaticamente** a data, a hora e o usuário responsável. |
 | **RN11** | Movimentações **não podem ser editadas nem excluídas**. Um lançamento errado é corrigido com uma movimentação inversa (ex.: uma entrada registrada a mais é corrigida com uma saída). |
 | **RN12** | Preços de custo e de venda não podem ser negativos. O estoque mínimo deve ser zero ou maior. |
+| **RN13** | Um preço de venda menor que o preço de custo só é aceito depois que o usuário confirma estar ciente. |
 
 ## 6. Requisitos não funcionais (como o sistema deve ser)
 
@@ -125,3 +126,4 @@ Para manter o projeto viável no prazo, **não** fazem parte desta versão:
 | Versão | Data | Descrição |
 |---|---|---|
 | 1.0 | 26/10/2026 | Elaboração do escopo: problema, objetivos, requisitos funcionais e não funcionais, regras de negócio e limites do escopo |
+| 1.1 | 09/11/2026 | Melhorias pedidas nos testes com usuários: RN13 (venda abaixo do custo), pesquisa sem acentos (RF10) e quantidade sugerida para compra (RF11) |

@@ -37,16 +37,17 @@
       <div class="card-header bg-warning-subtle"><i class="bi bi-exclamation-triangle text-warning"></i> <strong>Precisa repor</strong></div>
       <div class="table-responsive">
         <table class="table table-striped mb-0">
-          <thead><tr><th>Produto</th><th class="text-end">Estoque</th><th class="text-end">Mínimo</th></tr></thead>
+          <thead><tr><th>Produto</th><th class="text-end">Estoque</th><th class="text-end">Mínimo</th><th class="text-end">Sugestão de compra</th></tr></thead>
           <tbody>
             {% for produto in estoque_baixo %}
               <tr>
                 <td>{{ produto.nome }}</td>
                 <td class="text-end text-danger fw-bold">{{ produto.quantidade_atual }}</td>
                 <td class="text-end">{{ produto.estoque_minimo }}</td>
+                <td class="text-end fw-bold">{{ produto.quantidade_sugerida() }}</td>
               </tr>
             {% else %}
-              <tr><td colspan="3" class="text-center text-muted py-3">Nenhum produto precisa de reposição. 👍</td></tr>
+              <tr><td colspan="4" class="text-center text-muted py-3">Nenhum produto precisa de reposição. 👍</td></tr>
             {% endfor %}
           </tbody>
         </table>

@@ -30,6 +30,13 @@
       <div class="col-md-4">{{ campo("estoque_minimo", "Estoque mínimo", form, erros, inputmode="numeric", ajuda="Abaixo ou igual a este número, o produto entra no alerta.") }}</div>
     </div>
 
+    {% if pedir_confirmacao %}
+      <div class="form-check alert alert-warning">
+        <input class="form-check-input ms-0 me-2" type="checkbox" id="confirmar_prejuizo" name="confirmar_prejuizo" value="1">
+        <label class="form-check-label" for="confirmar_prejuizo">Estou ciente e quero vender este produto abaixo do custo.</label>
+      </div>
+    {% endif %}
+
     <div class="alert alert-light border small">
       <i class="bi bi-info-circle"></i>
       {% if novo %}
