@@ -8,4 +8,4 @@ Verificação e validação da solução, testes com 5 usuários, correções e 
 | `02-avaliacoes-testadores.md` | Consolidação das 5 avaliações | ⏳ |
 | `avaliacoes-testadores.pdf` | Respostas originais dos 5 testadores | ⏳ |
 | `03-laudo-de-qualidade.md` + `evidencias/` | Erros encontrados, correções e evidências | ⏳ |
-| Vídeo da solução atualizada (máx. 5 min) | Link no README principal | ⏳ |
+| [Vídeo da solução atualizada](https://youtu.be/NXJucaJNh7Y) | Melhorias feitas após os testes com usuários | ✅ |
