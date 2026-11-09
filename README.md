@@ -29,7 +29,7 @@ O **EstoqueFácil** é um sistema web simples para o comerciante saber, a qualqu
 | Item | Link |
 |---|---|
 | Sistema em funcionamento | **https://estoquefacil-f1t6.onrender.com** (login de demonstração: `demo@estoquefacil.com` / `demo123`) — no plano gratuito, o primeiro acesso pode levar ~1 minuto |
-| Vídeo de demonstração (narrado) | _a definir_ |
+| Vídeo de demonstração (narrado) | https://youtu.be/SlKI0vGyLEs |
 | Vídeo da solução atualizada | _a definir_ |
 
 ## Tecnologias
